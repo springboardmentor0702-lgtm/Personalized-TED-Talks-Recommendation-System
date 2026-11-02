@@ -1,0 +1,51 @@
+{
+    "project": "TED Talks Recommendation System - Milestone 2",
+    "vectorization_method": "TF-IDF",
+    "representations": {
+        "combined_text": {
+            "max_features": 50000,
+            "ngram_range": [
+                1,
+                2
+            ],
+            "min_df": 2,
+            "max_df": 0.95,
+            "stop_words": "english",
+            "sublinear_tf": true,
+            "dtype": "float32"
+        },
+        "transcript": {
+            "max_features": 50000,
+            "ngram_range": [
+                1,
+                2
+            ],
+            "min_df": 2,
+            "max_df": 0.95,
+            "stop_words": "english",
+            "sublinear_tf": true,
+            "dtype": "float32"
+        },
+        "topics": {
+            "max_features": 50000,
+            "ngram_range": [
+                1,
+                2
+            ],
+            "min_df": 1,
+            "max_df": 1.0,
+            "stop_words": "english",
+            "sublinear_tf": true,
+            "dtype": "float32"
+        }
+    },
+    "train_test_split": {
+        "train_fraction": 0.8,
+        "test_fraction": 0.2,
+        "random_state": 42,
+        "purpose": "Held-out query evaluation; vectorizers fit on training catalogue only"
+    },
+    "similarity": "Cosine similarity",
+    "collaborative_filtering": "Not implemented if verified user-item interaction data is unavailable",
+    "hybrid_recommendation": "Not implemented without a collaborative interaction signal"
+}
