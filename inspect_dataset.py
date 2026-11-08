@@ -1,73 +1,31 @@
 
 import pandas as pd
-import joblib
 from pathlib import Path
-from sklearn.metrics.pairwise import cosine_similarity
 
-BASE_DIR = Path(__file__).resolve().parent
+# Find CSV files in the project folder and its subfolders
+base_dir = Path(__file__).resolve().parent
+csv_files = list(base_dir.rglob("*.csv"))
 
-# Load dataset and saved TF-IDF objects
-df = pd.read_csv(BASE_DIR / "ted_talks_preprocessed.csv")
-vectorizer = joblib.load(BASE_DIR / "tfidf_vectorizer.joblib")
-tfidf_matrix = joblib.load(BASE_DIR / "tfidf_matrix.joblib")
+if not csv_files:
+    print("No CSV files found in the project folder.")
+else:
+    for file in csv_files:
+        print("\n" + "=" * 60)
+        print("File:", file.relative_to(base_dir))
 
+        try:
+            df = pd.read_csv(file)
 
-def recommend_talks(topic, top_n=5):
-    topic = topic.strip().lower()
+            print("Dataset shape:", df.shape)
+            print("\nColumn names:")
+            print(df.columns.tolist())
 
-    if not topic:
-        print("Please enter a topic.")
-        return
+            print("\nFirst 3 rows:")
+            print(df.head(3).to_string(index=False))
 
-    # Convert the entered topic into a TF-IDF vector
-    query_vector = vectorizer.transform([topic])
+            print("\nMissing values per column:")
+            print(df.isnull().sum().to_string())
 
-    # Check whether the topic contains known words
-    if query_vector.nnz == 0:
-        print("\nNo matching words found in the TF-IDF vocabulary.")
-        print("Try a related topic or a different phrase.")
-        return
-
-    # Compare the topic with all TED Talks
-    scores = cosine_similarity(query_vector, tfidf_matrix).flatten()
-
-    # Rank talks by similarity
-    ranked_indices = scores.argsort()[::-1]
-
-    print(f"\nRecommended TED Talks about: {topic}\n")
-
-    count = 0
-
-    for idx in ranked_indices:
-        if scores[idx] <= 0:
-            break
-
-        talk = df.iloc[idx]
-
-        print(f"{count + 1}. {talk['title'].title()}")
-        print(f"   Speaker: {talk['main_speaker']}")
-        print(f"   Description: {talk['details']}")
-        print(f"   Similarity score: {scores[idx]:.4f}")
-        print(f"   URL: {talk['url']}\n")
-
-        count += 1
-
-        if count == top_n:
-            break
-
-    if count == 0:
-        print("No related talks found in the dataset.")
-
-
-if __name__ == "__main__":
-    print("TED Talks Topic Recommendation System")
-    print("-------------------------------------")
-
-    while True:
-        topic = input("\nEnter a topic (or type 'exit' to quit): ")
-
-        if topic.strip().lower() == "exit":
-            print("Goodbye!")
-            break
-
-        recommend_talks(topic)
+        except Exception as e:
+            print("Could not read this file:", e)
+    
