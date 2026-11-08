@@ -1,133 +1,117 @@
+"""
+Module 4: Interactive TED Talks Recommender CLI
+Personalized TED Talks Recommendation System
+"""
 
-import pandas as pd
+import sys
 import joblib
-import re
-import math
+import pandas as pd
 from pathlib import Path
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from recommender_engine import ContentBasedRecommender, CollaborativeFilteringRecommender, HybridRecommender
 
 BASE_DIR = Path(__file__).resolve().parent
+MODELS_DIR = BASE_DIR / "models"
+DATA_FILE = BASE_DIR / "ted_talks_preprocessed.csv"
 
-df = pd.read_csv(BASE_DIR / "ted_talks_preprocessed.csv")
-df["title"] = df["title"].fillna("").astype(str)
-df["details"] = df["details"].fillna("").astype(str)
-df["url"] = df["url"].fillna("").astype(str)
-df["main_speaker"] = df["main_speaker"].fillna("Unknown").astype(str)
+# Load preprocessed metadata
+df = pd.read_csv(DATA_FILE)
 
-# Build separate representations for titles and descriptions
-title_vectorizer = TfidfVectorizer(
-    stop_words="english",
-    ngram_range=(1, 2),
-    sublinear_tf=True
-)
-
-details_vectorizer = TfidfVectorizer(
-    stop_words="english",
-    ngram_range=(1, 2),
-    max_features=20000,
-    sublinear_tf=True
-)
-
-title_matrix = title_vectorizer.fit_transform(df["title"])
-details_matrix = details_vectorizer.fit_transform(df["details"])
-
-# Exclude common words when checking query coverage
-stop_words = title_vectorizer.get_stop_words()
+# Load trained models
+print("Loading recommendation models...")
+content_rec = joblib.load(MODELS_DIR / "content_recommender.joblib")
+hybrid_rec = joblib.load(MODELS_DIR / "hybrid_recommender.joblib")
+print("Models loaded successfully!\n")
 
 
-def normalize(text):
-    return re.sub(r"[^a-z0-9]+", " ", str(text).lower()).strip()
-
-
-def recommend_talks(topic, top_n=5):
-    topic = topic.strip()
-    if not topic:
-        print("Please enter a topic.")
-        return
-
-    query = normalize(topic)
-    terms = query.split()
-    important_terms = [w for w in terms if w not in stop_words]
-
-    if not important_terms:
-        print("Please enter a more specific topic.")
-        return
-
-    # Calculate similarity separately for titles and descriptions
-    title_query = title_vectorizer.transform([topic])
-    details_query = details_vectorizer.transform([topic])
-
-    title_scores = cosine_similarity(
-        title_query, title_matrix
-    ).flatten()
-
-    details_scores = cosine_similarity(
-        details_query, details_matrix
-    ).flatten()
-
-    results = []
-
-    for i, row in df.iterrows():
-        title = normalize(row["title"])
-        details = normalize(row["details"])
-        combined = title + " " + details
-
-        # Require enough of the important query words to appear
-        matched_terms = sum(
-            1 for word in set(important_terms)
-            if re.search(r"\b" + re.escape(word) + r"\b", combined)
-        )
-
-        required_terms = max(
-            1, math.ceil(0.6 * len(set(important_terms)))
-        )
-
-        if matched_terms < required_terms:
-            continue
-
-        # Titles matter more than descriptions
-        score = 0.65 * title_scores[i] + 0.35 * details_scores[i]
-
-        # Bonus when the complete phrase appears
-        if re.search(r"\b" + re.escape(query) + r"\b", title):
-            score += 0.20
-        elif re.search(r"\b" + re.escape(query) + r"\b", details):
-            score += 0.10
-
-        if score > 0:
-            results.append((i, score))
-
-    results.sort(key=lambda item: item[1], reverse=True)
-
-    # Avoid displaying weak matches
-    results = [item for item in results if item[1] >= 0.04]
-    results = results[:top_n]
-
-    print(f"\nRecommendations for: {topic}\n")
-
+def display_recommendations(results, mode_name):
     if not results:
-        print("No sufficiently relevant talks found in this dataset.")
-        print("Try a broader or related topic.")
+        print("\nNo matching talks found. Try a different query or topic.")
         return
+
+    print(f"\n{'='*70}")
+    print(f"Top {len(results)} Recommendations ({mode_name})")
+    print(f"{'='*70}")
 
     for rank, (idx, score) in enumerate(results, start=1):
-        row = df.iloc[idx]
+        talk = df.iloc[idx]
+        title = str(talk["title"]).title()
+        speaker = talk["main_speaker"]
+        details = str(talk["details"])
+        url = talk["url"]
 
-        print(f"{rank}. {row['title'].title()}")
-        print(f"   Speaker: {row['main_speaker']}")
-        print(f"   Description: {row['details']}")
-        print(f"   Relevance score: {score:.3f}")
-        print(f"   URL: {row['url']}\n")
+        # Truncate details for readable CLI presentation
+        short_details = details if len(details) <= 160 else details[:157] + "..."
+
+        print(f"\n{rank}. {title}")
+        print(f"   Speaker:     {speaker}")
+        print(f"   Relevance:   {score:.4f}")
+        print(f"   Description: {short_details}")
+        if pd.notna(url) and str(url).strip():
+            print(f"   URL:         {url}")
+    print(f"\n{'='*70}\n")
+
+
+def main():
+    print("=" * 70)
+    print("  PERSONALIZED TED TALKS RECOMMENDATION SYSTEM (CLI)")
+    print("=" * 70)
+    print("Modes:")
+    print("  1. Search by Topic / Natural Language Query")
+    print("  2. Recommend Similar Talks (Item-to-Item by Title or Index)")
+    print("  Type 'exit' or 'quit' at any prompt to exit.\n")
+
+    while True:
+        try:
+            choice = input("Select mode (1 for Topic Search, 2 for Similar Talks, 'exit' to quit): ").strip()
+            if choice.lower() in ["exit", "quit", "q"]:
+                print("Exiting TED Talks Recommender. Goodbye!")
+                break
+
+            if choice == "1":
+                query = input("\nEnter topic / keywords (e.g. 'artificial intelligence', 'climate change'): ").strip()
+                if query.lower() in ["exit", "quit"]:
+                    break
+                if not query:
+                    print("Please enter a non-empty query.")
+                    continue
+                results = content_rec.recommend_for_query(query, top_n=5)
+                display_recommendations(results, f"Topic: '{query}'")
+
+            elif choice == "2":
+                lookup = input("\nEnter Talk Index (0-4466) or partial title: ").strip()
+                if lookup.lower() in ["exit", "quit"]:
+                    break
+                if not lookup:
+                    continue
+
+                target_idx = None
+                if lookup.isdigit():
+                    idx_val = int(lookup)
+                    if 0 <= idx_val < len(df):
+                        target_idx = idx_val
+                    else:
+                        print(f"Index out of range (0 to {len(df)-1}).")
+                        continue
+                else:
+                    # Search matching titles
+                    matches = df[df["title"].str.contains(lookup.lower(), na=False)]
+                    if matches.empty:
+                        print(f"No talk found containing '{lookup}'.")
+                        continue
+                    target_idx = matches.index[0]
+                    print(f"Matched talk: '{df.iloc[target_idx]['title'].title()}' by {df.iloc[target_idx]['main_speaker']}")
+
+                results = content_rec.recommend_similar_talks(target_idx, top_n=5)
+                seed_title = df.iloc[target_idx]["title"].title()
+                display_recommendations(results, f"Similar to: '{seed_title}'")
+
+            else:
+                print("Invalid selection. Please enter 1, 2, or 'exit'.")
+
+        except (KeyboardInterrupt, EOFError):
+            print("\nGoodbye!")
+            break
 
 
 if __name__ == "__main__":
-    while True:
-        topic = input(
-            "Enter a topic (or type 'exit' to quit): "
-        )
-
-        if topic.strip().lower() == "exit":
-            break
-
-        recommend_talks(topic)
+    main()
