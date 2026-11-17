@@ -1,0 +1,10 @@
+[theme]
+# Deep Royal Navy Blue
+primaryColor = "#1D3557"
+# Off-white
+backgroundColor = "#F4F7F6"
+# Soft light grey
+secondaryBackgroundColor = "#E8ECEF"
+# Dark Slate Charcoal
+textColor = "#2B2D42"
+font = "sans serif"
