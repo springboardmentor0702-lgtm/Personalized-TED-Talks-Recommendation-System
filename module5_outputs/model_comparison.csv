@@ -1,0 +1,6 @@
+approach,evaluated_queries,excluded_queries,precision@5,recall@5,ndcg@5,map@5,hit_rate@5,precision@10,recall@10,ndcg@10,map@10,hit_rate@10,interpretability,cold_start_behavior
+Transcript-only TF-IDF,4004,1,0.3,0.2522,0.341,0.2299,0.7995,0.2125,0.3571,0.3669,0.2309,0.8861,High (inspectable n-gram term overlap),Fails on 5 empty-transcript talks without tags
+Tags-only TF-IDF,4004,1,0.1533,0.1289,0.1696,0.1012,0.525,0.1184,0.1991,0.1928,0.1042,0.6651,Very High (explicit categorical topics),Misses fine-grained spoken nuance; many ties
+Combined TF-IDF (50:50),4004,1,0.1932,0.1624,0.2157,0.1335,0.6141,0.1455,0.2446,0.2412,0.1372,0.7415,High (decomposes into transcript + tag similarity),Handles new talks via transcript/tags; no user cold-start
+Transcript-primary (Tags-fallback),4004,1,0.3001,0.2523,0.3412,0.2299,0.8,0.2126,0.3574,0.3671,0.231,0.8871,High (transcript n-grams with explicit tag fallback),100% catalog coverage; falls back to tags on empty transcripts
+Popularity Baseline (Views),4004,1,0.0044,0.0037,0.005,0.0025,0.0217,0.003,0.0051,0.0053,0.0023,0.0295,Trivial (global view count ranking),Non-personalized; ignores query talk completely

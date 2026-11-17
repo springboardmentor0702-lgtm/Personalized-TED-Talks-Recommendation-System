@@ -1,0 +1,136 @@
+{
+  "module": "Module 5 \u2013 Evaluation Metrics",
+  "created_utc": "2026-11-12T15:35:00+00:00",
+  "dataset_file": "ted_talks_prepared.csv",
+  "artifacts_reused_from": "milestone2_outputs",
+  "data_leakage_audit": {
+    "leakage_detected": false,
+    "features_used_for_tfidf": [
+      "transcript",
+      "topics"
+    ],
+    "related_talk_ids_in_vectorizer": false,
+    "related_talk_ids_in_similarity": false,
+    "m3_transcript_matrix_shape": [
+      4005,
+      50000
+    ],
+    "m3_tag_matrix_shape": [
+      4005,
+      457
+    ],
+    "note": "Verified: `related_talk_ids` is used strictly for offline proxy ground-truth evaluation and is completely excluded from TF-IDF fitting, similarity computation, and popularity ranking."
+  },
+  "ground_truth_stats": {
+    "total_talks": 4005,
+    "eligible_queries": 4004,
+    "excluded_queries": 1,
+    "excluded_talk_ids": [
+      14610
+    ],
+    "raw_links_parsed": 23915,
+    "self_links_removed": 4,
+    "out_of_dataset_links_removed": 122,
+    "mean_relevant_per_eligible_query": 5.9413,
+    "min_relevant_per_eligible_query": 1,
+    "max_relevant_per_eligible_query": 6,
+    "ground_truth_note": "Proxy relevance labels derived from TED's editorial 'related_talk_ids'. These represent editorial curation links rather than actual user click/watch feedback."
+  },
+  "tags_fallback_queries_triggered": 5,
+  "k_values_evaluated": [
+    5,
+    10
+  ],
+  "approaches_evaluated": [
+    "Transcript-only TF-IDF",
+    "Tags-only TF-IDF",
+    "Combined TF-IDF (50:50)",
+    "Transcript-primary (Tags-fallback)",
+    "Popularity Baseline (Views)"
+  ],
+  "figures_generated": [
+    "01_precision_at_k_comparison.png",
+    "02_recall_at_k_comparison.png",
+    "03_ndcg_at_k_comparison.png",
+    "04_map_at_k_comparison.png",
+    "05_overall_model_comparison.png",
+    "06_approach_tradeoffs.png"
+  ],
+  "results_summary": [
+    {
+      "approach": "Transcript-only TF-IDF",
+      "evaluated_queries": 4004,
+      "excluded_queries": 1,
+      "precision@5": 0.3,
+      "recall@5": 0.2522,
+      "ndcg@5": 0.341,
+      "map@5": 0.2299,
+      "hit_rate@5": 0.7995,
+      "precision@10": 0.2125,
+      "recall@10": 0.3571,
+      "ndcg@10": 0.3669,
+      "map@10": 0.2309,
+      "hit_rate@10": 0.8861
+    },
+    {
+      "approach": "Tags-only TF-IDF",
+      "evaluated_queries": 4004,
+      "excluded_queries": 1,
+      "precision@5": 0.1533,
+      "recall@5": 0.1289,
+      "ndcg@5": 0.1696,
+      "map@5": 0.1012,
+      "hit_rate@5": 0.525,
+      "precision@10": 0.1184,
+      "recall@10": 0.1991,
+      "ndcg@10": 0.1928,
+      "map@10": 0.1042,
+      "hit_rate@10": 0.6651
+    },
+    {
+      "approach": "Combined TF-IDF (50:50)",
+      "evaluated_queries": 4004,
+      "excluded_queries": 1,
+      "precision@5": 0.1932,
+      "recall@5": 0.1624,
+      "ndcg@5": 0.2157,
+      "map@5": 0.1335,
+      "hit_rate@5": 0.6141,
+      "precision@10": 0.1455,
+      "recall@10": 0.2446,
+      "ndcg@10": 0.2412,
+      "map@10": 0.1372,
+      "hit_rate@10": 0.7415
+    },
+    {
+      "approach": "Transcript-primary (Tags-fallback)",
+      "evaluated_queries": 4004,
+      "excluded_queries": 1,
+      "precision@5": 0.3001,
+      "recall@5": 0.2523,
+      "ndcg@5": 0.3412,
+      "map@5": 0.2299,
+      "hit_rate@5": 0.8,
+      "precision@10": 0.2126,
+      "recall@10": 0.3574,
+      "ndcg@10": 0.3671,
+      "map@10": 0.231,
+      "hit_rate@10": 0.8871
+    },
+    {
+      "approach": "Popularity Baseline (Views)",
+      "evaluated_queries": 4004,
+      "excluded_queries": 1,
+      "precision@5": 0.0044,
+      "recall@5": 0.0037,
+      "ndcg@5": 0.005,
+      "map@5": 0.0025,
+      "hit_rate@5": 0.0217,
+      "precision@10": 0.003,
+      "recall@10": 0.0051,
+      "ndcg@10": 0.0053,
+      "map@10": 0.0023,
+      "hit_rate@10": 0.0295
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "genuine_user_item_interactions_found": false,
+  "user_level_columns": [],
+  "feedback_columns": [],
+  "aggregate_talk_columns_present": [
+    "views",
+    "comments"
+  ],
+  "collaborative_filtering_implemented": false,
+  "collaborative_filtering_evaluated": false,
+  "reason": "The dataset contains 4,005 talk-level catalog rows with aggregate popularity metrics ('views', 'comments'), but zero user IDs, session logs, explicit ratings, or individual watch histories. Without a genuine bipartite user-item interaction matrix, Collaborative Filtering cannot be trained or evaluated. No synthetic users or fake interactions were fabricated.",
+  "comparison_summary": {
+    "Content-Based Filtering": {
+      "data_requirements": "Item metadata, transcripts, topic tags (all available)",
+      "cold_start": "Works immediately for new talks with text/tags; no user history needed",
+      "personalization": "Content/query-driven; aligns with explicit talk or text query",
+      "explainability": "High (shared TF-IDF terms and matching topic tags)"
+    },
+    "Collaborative Filtering": {
+      "data_requirements": "Bipartite user-item interactions (unavailable in current dataset)",
+      "cold_start": "Suffers from both new-user and new-item cold-start problems",
+      "personalization": "Strong serendipity & latent taste modeling when user logs exist",
+      "explainability": "Moderate to Low (neighborhood or latent factor weights)"
+    }
+  }
+}
