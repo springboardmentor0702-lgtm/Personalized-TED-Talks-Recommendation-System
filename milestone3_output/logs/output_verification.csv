@@ -1,0 +1,8 @@
+file,exists,size_bytes
+milestone3_output\evaluation_reports\evaluation_coverage.csv,True,252
+milestone3_output\evaluation_reports\precision_recall_results.csv,True,44
+milestone3_output\evaluation_reports\ranking_metrics_results.csv,True,36
+milestone3_output\evaluation_reports\per_query_evaluation_metrics.csv,True,2
+milestone3_output\tables\model_performance_comparison.csv,True,62
+milestone3_output\documentation\final_model_selection.json,True,1045
+milestone3_output\documentation\final_evaluation_report.md,True,1202

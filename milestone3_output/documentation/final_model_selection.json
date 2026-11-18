@@ -1,0 +1,18 @@
+{
+    "project": "TED Talks Recommendation System - Milestone 3",
+    "selection_cutoff_k": 10,
+    "selection_method": "Equal-weight mean of Precision@10, Recall@10, NDCG@10 and MAP@10",
+    "selected_model": null,
+    "selection_score": null,
+    "model_scores": [],
+    "collaborative_filtering": {
+        "approach": "Collaborative filtering",
+        "status": "Not evaluable",
+        "user_identifier_columns_found": [],
+        "interaction_columns_found": [],
+        "reason": "No verified individual user–talk interaction records were found. Aggregate talk views do not identify user preferences.",
+        "hybrid_status": "Not implemented without a validated collaborative signal"
+    },
+    "ground_truth_note": "TED related-talk references are weak proxy relevance labels, not human-validated judgments.",
+    "justification": "No model selected automatically because valid proxy relevance labels were unavailable. Create a manually judged relevance set or obtain verified interaction data before selection."
+}

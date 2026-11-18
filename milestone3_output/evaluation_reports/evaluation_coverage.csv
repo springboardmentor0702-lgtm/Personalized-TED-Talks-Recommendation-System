@@ -1,0 +1,2 @@
+related_talk_column,test_queries_total,queries_with_at_least_one_catalogue_relevant_talk,queries_without_matching_relevant_talk,evaluation_coverage_percent,label_type
+related_talk_list,801,0,801,0.0,Weak proxy labels from TED related-talk references
