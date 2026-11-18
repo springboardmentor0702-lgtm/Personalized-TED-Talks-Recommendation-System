@@ -1,0 +1,17 @@
+### Final Model Selection and Justification
+
+The TF-IDF-based content recommendation model was selected as the final model for the Personalized TED Talks Recommendation System 
+because it outperformed the popularity-based baseline across all four evaluation metrics. 
+TF-IDF achieved a Precision@5 of 0.9293, Recall@5 of 0.0041, NDCG@5 of 0.9333, and MAP@5 of 0.9046, 
+compared with 0.3636, 0.0013, 0.3596, and 0.2390, respectively, for the popularity-based model.
+
+The results indicate that TF-IDF provides more relevant and better-ranked recommendations
+according to the project's evaluation criteria.
+Unlike the popularity-based baseline, which recommends talks primarily based on general popularity, 
+TF-IDF represents talk content using term importance and identifies talks with similar textual characteristics. 
+This makes it more suitable for content-based recommendation.
+
+Therefore, TF-IDF was chosen as the preferred final model.
+However, the low Recall@5 indicates that the model retrieves only a small proportion of all relevant talks. 
+The evaluation also relies on topic-overlap relevance as a proxy rather than actual user feedback.
+Further testing with additional relevance criteria and user interaction data would help validate its real-world performance.

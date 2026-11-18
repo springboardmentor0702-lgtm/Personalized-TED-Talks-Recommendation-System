@@ -1,0 +1,66 @@
+TED TALKS RECOMMENDATION SYSTEM
+MILESTONE 3: MODEL EVALUATION REPORT
+
+DATASET
+-------
+Total talks: 4005
+TF-IDF matrix shape: (4005, 20000)
+Vocabulary size: 20000
+Queries evaluated: 4005
+Queries skipped: 0
+Cutoffs evaluated: Top 5 and Top 10
+
+METHODOLOGY
+-----------
+Each talk is used as a query.
+A different talk is considered relevant if it shares at least
+one topic tag with the query talk.
+The query talk itself is excluded from recommendations.
+TF-IDF ranks candidates using cosine similarity.
+The popularity baseline ranks candidates by view count.
+
+METRIC DEFINITIONS
+------------------
+Precision@K: relevant recommendations divided by K.
+Recall@K: retrieved relevant talks divided by all relevant talks.
+NDCG@K: ranking quality with greater weight for higher ranks.
+MAP@K: mean average precision, normalized here by
+min(total relevant talks, K).
+
+RESULTS
+-------
+               Model  K  Precision   Recall     NDCG      MAP
+ Popularity Baseline  5   0.363645 0.001280 0.359608 0.239044
+ Popularity Baseline 10   0.300350 0.002196 0.316650 0.177826
+TF-IDF Content-Based  5   0.929338 0.004070 0.933338 0.904590
+TF-IDF Content-Based 10   0.916479 0.007985 0.923012 0.879490
+
+LIMITATIONS
+-----------
+Topic overlap is a proxy for relevance, not real user feedback.
+A talk sharing one topic is counted as relevant even if the
+overall semantic similarity is weak.
+The popularity baseline may favor older or widely viewed talks.
+Collaborative filtering was not evaluated because user-talk
+interaction data was not available.
+
+MODEL SELECTION
+---------------
+Compare all four metrics at both cutoffs before selecting the
+final model. Consider interpretability and suitability as well
+as measured ranking performance.
+Do not treat proxy-label metrics as evidence of user satisfaction.
+
+TF-IDF CONTENT-BASED — TOP 5 VS TOP 10
+-----------------------------------------
+Precision: Top 5=0.929338; Top 10=0.916479; change=-0.012859
+Recall: Top 5=0.004070; Top 10=0.007985; change=+0.003915
+NDCG: Top 5=0.933338; Top 10=0.923012; change=-0.010326
+MAP: Top 5=0.904590; Top 10=0.879490; change=-0.025101
+
+POPULARITY BASELINE — TOP 5 VS TOP 10
+----------------------------------------
+Precision: Top 5=0.363645; Top 10=0.300350; change=-0.063296
+Recall: Top 5=0.001280; Top 10=0.002196; change=+0.000916
+NDCG: Top 5=0.359608; Top 10=0.316650; change=-0.042958
+MAP: Top 5=0.239044; Top 10=0.177826; change=-0.061218
