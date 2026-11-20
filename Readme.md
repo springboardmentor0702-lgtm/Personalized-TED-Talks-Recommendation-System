@@ -198,19 +198,20 @@ The following screenshots demonstrate the application interface and its function
 
 ### Home Page
 
-![Home Page](Screenshots/01_Home_Page.png)
+![Home Page](Milestone_4/Screenshots/home_page.png)
 
 ### TED Talk Selection
 
-![TED Talk Selection](Screenshots/02_TED_Talk_Selection.png)
+![TED Talk Selection](Milestone_4/Screenshots/Tedtalks_selections.png)
 
 ### Selected TED Talk Details
 
-![Selected Talk Details](Screenshots/03_Selected_Talk_Details.png)
+![Selected Talk Details](Milestone_4/Screenshots/tedtalks_selected_details.png)
 
 ### Recommendation Results
 
-![Recommendation Results](Screenshots/04_Recommendations.png)
+![Recommendation Results](Milestone_4/Screenshots/Recommendations.png)
+![Recommendation Results](Milestone_4/Screenshots/Recommendation.png)
 
 ## 10. Example Recommendation Workflow
 
